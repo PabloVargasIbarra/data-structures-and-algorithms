@@ -1,0 +1,8 @@
+.idea*
+*.js
+*.java
+*.cpp
+*.kt
+*.rb
+*DS_STORE
+*.hs
