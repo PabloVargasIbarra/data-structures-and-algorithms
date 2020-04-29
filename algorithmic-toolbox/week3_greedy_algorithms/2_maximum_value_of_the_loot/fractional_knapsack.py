@@ -1,10 +1,18 @@
 # Uses python3
 import sys
+import numpy as np
+
 
 def get_optimal_value(capacity, weights, values):
     value = 0.
-    # write your code here
-
+    unit_value = np.array(values) / np.array(weights)
+    item_order = np.array(range(len(values)))[(-unit_value).argsort()]
+    for index in item_order:
+        item_weight = min(capacity, weights[index])
+        value += item_weight * unit_value[index]
+        capacity -= item_weight
+        if capacity <= 0:
+            return value
     return value
 
 

@@ -4,13 +4,15 @@ from collections import namedtuple
 
 Segment = namedtuple('Segment', 'start end')
 
+
 def optimal_points(segments):
     points = []
-    #write your code here
-    for s in segments:
-        points.append(s.start)
-        points.append(s.end)
+    segments = [segment for _, segment in sorted(zip([s.end for s in segments], segments))]
+    while len(segments) > 0:
+        points.append(segments[0].end)
+        segments = [segment for segment in segments if segment.start > segments[0].end]
     return points
+
 
 if __name__ == '__main__':
     input = sys.stdin.read()
