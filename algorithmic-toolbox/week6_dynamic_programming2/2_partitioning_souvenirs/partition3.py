@@ -1,5 +1,6 @@
 # Uses python3
 import sys
+import numpy as np
 
 
 # def partition3_brute_force(A):
@@ -16,26 +17,28 @@ import sys
 
 
 def partition3(elements):
+    """Reference: https://web.cs.ucdavis.edu/~amenta/w04/dis4.pdf"""
     n_elements = len(elements)
     sum_elements = sum(elements)
     if n_elements < 3 or sum_elements % 3:
         return 0
     division_value = sum_elements // 3
-    matrix = [[0] * (n_elements + 1) for _ in range(division_value + 1)]
-    for value in range(1, division_value + 1):
-        for element_last_idx in range(1, n_elements + 1):
-            added_element = elements[element_last_idx-1]
-            if added_element == value:
-                matrix[value][element_last_idx] = min(matrix[value][element_last_idx-1] + 1, 2)
-            elif value > added_element and matrix[value-added_element][element_last_idx-1]:
-                matrix[value][element_last_idx] = min(matrix[value][element_last_idx - 1] + 1, 2)
-            else:
-                matrix[value][element_last_idx] = matrix[value][element_last_idx-1]
-    return 1 if matrix[-1][-1] == 2 else 0
+    matrix = np.zeros((division_value + 1, division_value + 1, n_elements + 1), dtype=np.bool)
+    matrix[0, 0, 0] = 1
+    for element_idx in range(0, n_elements):
+        for value_x in range(0, division_value + 1):
+            for value_y in range(0, division_value + 1):
+                k = elements[element_idx]
+                is_partition = matrix[value_x, value_y, element_idx]
+                if value_x >= k:
+                    is_partition = is_partition or matrix[value_x-k, value_y, element_idx]
+                if value_y >= k:
+                    is_partition = is_partition or matrix[value_x, value_y-k, element_idx]
+                matrix[value_x, value_y, element_idx+1] = is_partition
+    return int(matrix[division_value, division_value, n_elements])
 
 
 if __name__ == '__main__':
     input = sys.stdin.read()
     n, *A = list(map(int, input.split()))
     print(partition3(A))
-
