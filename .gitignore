@@ -6,3 +6,4 @@
 *.rb
 *DS_STORE
 *.hs
+*/*/*/tests/*
